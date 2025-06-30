@@ -208,6 +208,23 @@ static unlang_action_t trigger_run(request_t *request, void *uctx)
 
 
 /** Execute a trigger - call an executable to process an event
+ * A trigger ties a state change in a module to a particular configuration item 
+ * defined in raqddb/triggers.conf, or in the trigger section of a module.  This
+ * allows an administrator to be notified when something has happend.
+ *
+ * The name of each trigger is based on the module or the portion of the server 
+ * which runs the trigger.  The name of the trigger is usually taken from the
+ * state when the module has a state change.
+ *
+ * The trigger_exec function expands the configuration item, and runs the given
+ * function (exec, sql insert, etc.) asynchronously. This ensures the execution
+ * of the function does not interfere with the processing of requests.
+ *
+ * Triggers are separate from logs, because log messages are generally 
+ * informational and not time sensitive.
+ *
+ * In contrast, triggers are something where the administrator wants to be
+ * notified about an unusual event immediately.
  *
  * @note Calls to this function will be ignored if #trigger_exec_init has not been called.
  *
